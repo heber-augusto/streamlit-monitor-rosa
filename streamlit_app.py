@@ -29,7 +29,11 @@ def read_file(bucket_name, file_path):
     dados_estad_mensal['data'] = pd.to_datetime(
         dados_estad_mensal['data'],
         format='%Y%m')
+    # renomeia coluna
     dados_estad_mensal['estadiamento'] = dados_estad_mensal['primeiro_estadiamento']
+    
+    # remove dados de estadiamento vazio
+    dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.estadiamento != '']
     return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
