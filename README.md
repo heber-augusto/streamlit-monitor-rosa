@@ -1,4 +1,4 @@
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://heber-augusto-streamlit-monitor-rosa-streamlit-app-uwa1yj.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://monitor-rosa.streamlit.app/)
 
 # Monitor Rosa
 
