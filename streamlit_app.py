@@ -96,3 +96,5 @@ st.plotly_chart(fig)
 
 space(2)
 
+# inspirações para atualizar o dash
+# https://blog.streamlit.io/how-to-build-a-real-time-live-dashboard-with-streamlit/
