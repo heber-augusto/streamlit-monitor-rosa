@@ -57,7 +57,7 @@ symbols = st.multiselect("Escolha os estadiamentos", all_symbols, all_symbols[:3
 space(1)
 dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbols)]
 fig = px.line(dataset, x='data', y='custo_estadiamento', color='primeiro_estadiamento', symbol="primeiro_estadiamento")
-fig.show()
+st.plotly_chart(fig)
 
 space(2)
 
