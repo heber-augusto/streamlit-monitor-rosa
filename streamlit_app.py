@@ -35,6 +35,7 @@ def read_file(bucket_name, file_path):
     
     # remove dados de estadiamento vazio
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.estadiamento != '']
+    dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
     return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
@@ -50,7 +51,8 @@ def space(num_lines=1):
 metrics = {
  'Número de pacientes': 'numero_pacientes',   
  'Óbitos':'obtitos',
- 'Custo':'custo_estadiamento'
+ 'Custo':'custo_estadiamento',
+ 'Custo por paciente': 'custo_por_paciente'
 }
         
    
