@@ -88,8 +88,20 @@ fig = px.line(
     color='estadiamento', 
     symbol="estadiamento")
 
-# Edit the layout
-fig.update_layout(yaxis_title=metrics_selector)
+# Update layout (yaxis title and responsive legend)
+fig.update_layout(
+    yaxis_title=metrics_selector,
+    legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.7,
+            xanchor="left",
+            x=0.01
+            )    
+)
+
+
+
 
 
 st.plotly_chart(fig)
