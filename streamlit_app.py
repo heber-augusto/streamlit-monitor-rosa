@@ -5,10 +5,6 @@ from vega_datasets import data
 
 from utils import chart, db
 
-COMMENT_TEMPLATE_MD = """{} - {}
-> {}"""
-
-
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
     for _ in range(num_lines):
