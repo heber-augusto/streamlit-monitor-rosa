@@ -21,16 +21,19 @@ client = storage.Client(credentials=credentials)
 def read_file(bucket_name, file_path):
     bucket = client.bucket(bucket_name)
     content = bucket.blob(file_path).download_as_bytes()
-    return content
+    
+    bytes_io = BytesIO(content)
+    dados_estad_mensal = pd.read_parquet(bytes_io)    
+
+    dados_estad_mensal['data'] = pd.to_datetime(
+        pacientes['data'],
+        format='%Y%m')    
+    return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
 file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
 
-content = read_file(bucket_name, file_path)
-
-bytes_io = BytesIO(content)
-dados_estad_mensal = pd.read_parquet(bytes_io)
-
+dados_estad_mensal = read_file(bucket_name, file_path)
 
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
