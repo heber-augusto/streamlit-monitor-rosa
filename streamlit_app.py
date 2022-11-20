@@ -28,7 +28,8 @@ def read_file(bucket_name, file_path):
 
     dados_estad_mensal['data'] = pd.to_datetime(
         dados_estad_mensal['data'],
-        format='%Y%m')    
+        format='%Y%m')
+    dados_estad_mensal['estadiamento'] = dados_estad_mensal['primeiro_estadiamento']
     return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
@@ -51,12 +52,17 @@ st.title(f"Monitor Rosa - dados mensais")
 # {len(dados_estad_mensal.index)}
 
 source = dados_estad_mensal
-all_symbols = dados_estad_mensal.primeiro_estadiamento.unique()
+all_symbols = dados_estad_mensal.estadiamento.unique()
 symbols = st.multiselect("Escolha os estadiamentos", all_symbols, all_symbols[:3])
 
 space(1)
 dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbols)]
-fig = px.line(dataset, x='data', y='custo_estadiamento', color='primeiro_estadiamento', symbol="primeiro_estadiamento")
+fig = px.line(
+    dataset, 
+    x='data', 
+    y='numero_pacientes', 
+    color='estadiamento', 
+    symbol="estadiamento")
 st.plotly_chart(fig)
 
 space(2)
