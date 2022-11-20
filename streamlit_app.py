@@ -60,19 +60,13 @@ st.set_page_config(
 
 # Data visualisation part
 
-st.title(f"Monitor Rosa - dados mensais")
-
-
 sidebar = st.sidebar
 metrics_selector = sidebar.selectbox(
     "Selecione a métrica desejada",
     list(metrics.keys())
 )
-st.markdown(f"# Métrica selecionada {metrics_selector}")    
 
-
-
-# {len(dados_estad_mensal.index)}
+st.title(f"Monitor Rosa - dados mensais de {metrics_selector}")
 
 source = dados_estad_mensal
 all_symbols = dados_estad_mensal.estadiamento.unique()
