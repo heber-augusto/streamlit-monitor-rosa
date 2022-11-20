@@ -46,12 +46,31 @@ def space(num_lines=1):
     for _ in range(num_lines):
         st.write("")
 
-
-st.set_page_config(layout="centered", page_icon="💬", page_title="Monitor Rosa")
+metrics = {
+ 'pacientes':'numero_pacientes',   
+ 'obitos':'obtitos',
+ 'custo':'custo_estadiamento'
+}
+        
+   
+st.set_page_config(
+    layout="wide", 
+    page_icon="📈", 
+    page_title="Monitor Rosa")
 
 # Data visualisation part
 
 st.title(f"Monitor Rosa - dados mensais")
+
+
+sidebar = st.sidebar
+metrics_selector = sidebar.selectbox(
+    "Select a Location",
+    list(metrics.keys())
+)
+st.markdown(f"# Métrica selecionada {metrics_selector}")    
+
+
 
 # {len(dados_estad_mensal.index)}
 
