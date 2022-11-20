@@ -68,7 +68,7 @@ all_symbols = dados_estad_mensal.estadiamento.unique()
 symbols = st.multiselect("Estadiamentos", all_symbols, all_symbols)
 
 metrics_selector = st.selectbox(
-    "Selecione a métrica desejada",
+    "Métrica",
     list(metrics.keys())
 )
 
