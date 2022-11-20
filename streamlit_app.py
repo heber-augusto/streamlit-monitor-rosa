@@ -77,7 +77,7 @@ dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbo
 fig = px.line(
     dataset, 
     x='data', 
-    y='numero_pacientes', 
+    y=metrics[metrics_selector], 
     color='estadiamento', 
     symbol="estadiamento")
 
