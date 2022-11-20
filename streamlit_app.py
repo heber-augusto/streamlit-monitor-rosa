@@ -60,17 +60,17 @@ st.set_page_config(
 
 # Data visualisation part
 
-sidebar = st.sidebar
-metrics_selector = sidebar.selectbox(
+st.title(f"Monitor Rosa - dados mensais")
+
+source = dados_estad_mensal
+all_symbols = dados_estad_mensal.estadiamento.unique()
+symbols = st.multiselect("Escolha os estadiamentos", all_symbols, all_symbols)
+
+metrics_selector = st.selectbox(
     "Selecione a métrica desejada",
     list(metrics.keys())
 )
 
-st.title(f"Monitor Rosa - dados mensais de {metrics_selector}")
-
-source = dados_estad_mensal
-all_symbols = dados_estad_mensal.estadiamento.unique()
-symbols = st.multiselect("Escolha os estadiamentos", all_symbols, all_symbols[:3])
 
 space(1)
 dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbols)]
