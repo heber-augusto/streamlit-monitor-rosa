@@ -2,7 +2,6 @@ from datetime import datetime
 from io import BytesIO
 
 import streamlit as st
-from vega_datasets import data
 
 from utils import chart, db
 from google.oauth2 import service_account
@@ -53,9 +52,6 @@ symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[
 
 space(1)
 
-source = source[source.primeiro_estadiamento.isin(symbols)]
-chart = chart.get_chart(source)
-st.altair_chart(chart, use_container_width=True)
 
 space(2)
 
