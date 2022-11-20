@@ -73,8 +73,8 @@ metrics_selector = st.selectbox(
 )
 
 
-# min_date = dados_estad_mensal.data.iloc[0].dt.date
-# max_date = dados_estad_mensal.data.iloc[-1].dt.date
+min_date = dados_estad_mensal.data.iloc[0].dt.date
+max_date = dados_estad_mensal.data.iloc[-1].dt.date
 
 min_date = datetime.date(2020,1,1)
 max_date = datetime.date(2022,1,1)
