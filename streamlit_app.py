@@ -47,9 +47,9 @@ def space(num_lines=1):
         st.write("")
 
 metrics = {
- 'pacientes':'numero_pacientes',   
- 'obitos':'obtitos',
- 'custo':'custo_estadiamento'
+ 'Número de pacientes': 'numero_pacientes',   
+ 'Óbitos':'obtitos',
+ 'Custo':'custo_estadiamento'
 }
         
    
@@ -80,6 +80,11 @@ fig = px.line(
     y='numero_pacientes', 
     color='estadiamento', 
     symbol="estadiamento")
+
+# Edit the layout
+fig.update_layout(yaxis_title=metrics_selector)
+
+
 st.plotly_chart(fig)
 
 space(2)
