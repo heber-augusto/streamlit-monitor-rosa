@@ -26,7 +26,7 @@ def read_file(bucket_name, file_path):
     dados_estad_mensal = pd.read_parquet(bytes_io)    
 
     dados_estad_mensal['data'] = pd.to_datetime(
-        pacientes['data'],
+        dados_estad_mensal['data'],
         format='%Y%m')    
     return dados_estad_mensal
 
