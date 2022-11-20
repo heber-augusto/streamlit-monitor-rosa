@@ -6,6 +6,7 @@ import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import storage
 import pandas as pd
+from datetime import datetime
 
 import plotly.express as px
 
@@ -71,6 +72,16 @@ metrics_selector = st.selectbox(
     list(metrics.keys())
 )
 
+
+# min_date = dados_estad_mensal.data.iloc[0].dt.date
+# max_date = dados_estad_mensal.data.iloc[-1].dt.date
+
+min_date = datetime.date(2020,1,1)
+max_date = datetime.date(2022,1,1)
+
+a_date = st.date_input("Selecione o intervalo", (min_date, max_date))
+
+st.title(f"entre {a_date[0]} e {a_date[1]}")
 
 space(1)
 dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbols)]
