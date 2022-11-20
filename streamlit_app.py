@@ -30,7 +30,7 @@ file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
 content = read_file(bucket_name, file_path)
 
 bytes_io = BytesIO(content)
-df = pd.read_parquet(bytes_io)
+dados_estad_mensal = pd.read_parquet(bytes_io)
 
 
 def space(num_lines=1):
@@ -39,14 +39,16 @@ def space(num_lines=1):
         st.write("")
 
 
-st.set_page_config(layout="centered", page_icon="💬", page_title="Commenting app")
+st.set_page_config(layout="centered", page_icon="💬", page_title="Monitor Rosa")
 
 # Data visualisation part
 
-st.title(f"💬 Commenting app {len(df.index)}")
+st.title(f"Monitor Rosa - dados mensais")
+
+# {len(dados_estad_mensal.index)}
 
 source = data.stocks()
-all_symbols = source.symbol.unique()
+all_symbols = dados_estad_mensal.primeiro_estadiamento.unique()
 symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[:3])
 
 space(1)
