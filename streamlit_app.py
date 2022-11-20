@@ -6,7 +6,7 @@ import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import storage
 import pandas as pd
-from datetime import datetime
+import datetime
 
 import plotly.express as px
 
@@ -65,7 +65,7 @@ st.title(f"Monitor Rosa - dados mensais")
 
 source = dados_estad_mensal
 all_symbols = dados_estad_mensal.estadiamento.unique()
-symbols = st.multiselect("Escolha os estadiamentos", all_symbols, all_symbols)
+symbols = st.multiselect("Estadiamentos", all_symbols, all_symbols)
 
 metrics_selector = st.selectbox(
     "Selecione a métrica desejada",
@@ -79,7 +79,7 @@ metrics_selector = st.selectbox(
 min_date = datetime.date(2020,1,1)
 max_date = datetime.date(2022,1,1)
 
-a_date = st.date_input("Selecione o intervalo", (min_date, max_date))
+a_date = st.date_input("Período", (min_date, max_date))
 
 st.title(f"entre {a_date[0]} e {a_date[1]}")
 
