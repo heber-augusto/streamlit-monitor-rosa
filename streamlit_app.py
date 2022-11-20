@@ -29,8 +29,8 @@ file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
 
 content = read_file(bucket_name, file_path)
 
-bytes_io = BytesIO(content.readall())
-df = pd.read_parquet(bytes_io)
+# bytes_io = BytesIO(content.readall())
+df = pd.read_parquet(content)
 
 
 def space(num_lines=1):
