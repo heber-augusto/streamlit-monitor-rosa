@@ -65,7 +65,7 @@ st.title(f"Monitor Rosa - dados mensais")
 
 sidebar = st.sidebar
 metrics_selector = sidebar.selectbox(
-    "Select a Location",
+    "Selecione a métrica desejada",
     list(metrics.keys())
 )
 st.markdown(f"# Métrica selecionada {metrics_selector}")    
