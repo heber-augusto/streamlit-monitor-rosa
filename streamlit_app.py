@@ -79,8 +79,6 @@ metrics_selector = st.selectbox(
 # max_date = datetime.date(2022,1,1)
 # a_date = st.date_input("Período", (min_date, max_date))
 
-st.title(f"entre {a_date[0]} e {a_date[1]}")
-
 space(1)
 dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbols)]
 fig = px.line(
