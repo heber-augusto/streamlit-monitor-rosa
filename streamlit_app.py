@@ -3,10 +3,11 @@ from io import BytesIO
 
 import streamlit as st
 
-from utils import chart, db
 from google.oauth2 import service_account
 from google.cloud import storage
 import pandas as pd
+
+import plotly.express as px
 
 # Create API client.
 credentials = service_account.Credentials.from_service_account_info(
@@ -51,10 +52,12 @@ st.title(f"Monitor Rosa - dados mensais")
 
 source = dados_estad_mensal
 all_symbols = dados_estad_mensal.primeiro_estadiamento.unique()
-symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[:3])
+symbols = st.multiselect("Escolha os estadiamentos", all_symbols, all_symbols[:3])
 
 space(1)
-
+dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbols)]
+fig = px.line(dataset, x='data', y='custo_estadiamento', color='primeiro_estadiamento', symbol="primeiro_estadiamento")
+fig.show()
 
 space(2)
 
