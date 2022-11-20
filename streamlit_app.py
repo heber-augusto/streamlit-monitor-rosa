@@ -47,13 +47,13 @@ st.title(f"Monitor Rosa - dados mensais")
 
 # {len(dados_estad_mensal.index)}
 
-source = data.stocks()
+source = dados_estad_mensal
 all_symbols = dados_estad_mensal.primeiro_estadiamento.unique()
 symbols = st.multiselect("Choose stocks to visualize", all_symbols, all_symbols[:3])
 
 space(1)
 
-source = source[source.symbol.isin(symbols)]
+source = source[source.primeiro_estadiamento.isin(symbols)]
 chart = chart.get_chart(source)
 st.altair_chart(chart, use_container_width=True)
 
