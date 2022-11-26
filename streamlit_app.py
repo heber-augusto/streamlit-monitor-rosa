@@ -10,6 +10,13 @@ import datetime
 
 import plotly.express as px
 
+
+st.set_page_config(
+    layout="wide", 
+    page_icon="📈", 
+    page_title="Monitor Rosa")
+
+
 # Create API client.
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"]
@@ -56,11 +63,6 @@ metrics = {
 }
         
    
-st.set_page_config(
-    layout="wide", 
-    page_icon="📈", 
-    page_title="Monitor Rosa")
-
 # Data visualisation part
 
 st.title(f"Monitor Rosa - dados mensais (câncer de mama)")
