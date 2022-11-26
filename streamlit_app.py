@@ -46,7 +46,7 @@ def read_file(bucket_name, file_path):
     return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
-file_path = r"monitor/SP/consolidado/dados_estad_mensal_copy.parquet.gzip"
+file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
 
 dados_estad_mensal = read_file(bucket_name, file_path)
 
