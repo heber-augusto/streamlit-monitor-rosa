@@ -45,7 +45,7 @@ def read_file(bucket_name, file_path):
     dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
     
     #remove dois primeiros anos de dados
-    dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data >= datetime.date(2010,1,1)]    
+    dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data.dt.date >= datetime.date(2010,1,1)]    
     
     return dados_estad_mensal
 
