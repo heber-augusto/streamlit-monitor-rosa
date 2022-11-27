@@ -43,10 +43,15 @@ def read_file(bucket_name, file_path):
     # remove dados de estadiamento vazio
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.estadiamento != '']
     dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
+    
+    #remove dois primeiros anos de dados
+    dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data >= datetime(2010,1,1)]
+    
+    
     return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
-file_path = r"monitor/SP/consolidado/dados_estad_mensal_copy.parquet.gzip"
+file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
 
 dados_estad_mensal = read_file(bucket_name, file_path)
 
@@ -56,10 +61,11 @@ def space(num_lines=1):
         st.write("")
 
 metrics = {
- 'Número de pacientes': 'numero_pacientes',   
+ 'Número de pacientes em tratamento': 'numero_pacientes',   
  'Óbitos':'obtitos',
  'Custo':'custo_estadiamento',
- 'Custo por paciente': 'custo_por_paciente'
+ 'Custo por paciente': 'custo_por_paciente',
+ 'Número de diagnosticos': 'numero_diagnosticos'      
 }
         
    
