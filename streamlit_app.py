@@ -53,10 +53,11 @@ def read_file(bucket_name, file_path):
     # remove dados de estadiamento vazio
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.estadiamento != '']
     dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
-
+    
+    
     # cria média móvel para cada uma das colunas
     for k,v in metrics.items():    
-        dados_estad_mensal[f'{v}_ma'] = dados_estad_mensal[v].rolling(window=6).mean()
+        dados_estad_mensal[f'{v}_ma'] = dados_estad_mensal.groupby('estadiamento')[v].rolling(window=6).mean().reset_index(0,drop=True)
     
     #remove dois primeiros anos de dados
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data.dt.date >= datetime.date(2010,1,1)]    
