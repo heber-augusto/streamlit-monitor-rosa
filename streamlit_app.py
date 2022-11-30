@@ -89,7 +89,7 @@ metrics_selector = st.selectbox(
     list(metrics.keys())
 )
 
-ma_option = st.checkbox('Média móvel')
+ma_option = st.checkbox('Média móvel (6 meses)')
 
 
 if ma_option:
