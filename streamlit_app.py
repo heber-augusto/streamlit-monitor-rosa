@@ -24,6 +24,16 @@ credentials = service_account.Credentials.from_service_account_info(
 client = storage.Client(credentials=credentials)
 
 
+metrics = {
+ 'Número de pacientes em tratamento': 'numero_pacientes',   
+ 'Óbitos':'obtitos',
+ 'Custo':'custo_estadiamento',
+ 'Custo por paciente': 'custo_por_paciente',
+ 'Número de diagnosticos': 'numero_diagnosticos'      
+}
+ 
+
+
 # Retrieve file contents.
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
 @st.experimental_memo(persist="disk")
@@ -43,9 +53,14 @@ def read_file(bucket_name, file_path):
     # remove dados de estadiamento vazio
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.estadiamento != '']
     dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
+
+    # cria média móvel para cada uma das colunas
+    for k,v in metrics.items():    
+        dados_estad_mensal[f'{v}_ma'] = dados_estad_mensal[v].rolling(window=6).mean()
     
     #remove dois primeiros anos de dados
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data.dt.date >= datetime.date(2010,1,1)]    
+    
     
     return dados_estad_mensal
 
@@ -59,14 +74,7 @@ def space(num_lines=1):
     for _ in range(num_lines):
         st.write("")
 
-metrics = {
- 'Número de pacientes em tratamento': 'numero_pacientes',   
- 'Óbitos':'obtitos',
- 'Custo':'custo_estadiamento',
- 'Custo por paciente': 'custo_por_paciente',
- 'Número de diagnosticos': 'numero_diagnosticos'      
-}
-        
+       
    
 # Data visualisation part
 
@@ -81,6 +89,11 @@ metrics_selector = st.selectbox(
     list(metrics.keys())
 )
 
+ma_option = st.checkbox('Média móvel')
+
+
+if ma_option:
+   metrics_selector = f'{metrics_selector}_ma'
 
 # min_date = dados_estad_mensal.data.dt.date[0]
 # max_date = dados_estad_mensal.data.dt.date[-1]
@@ -96,6 +109,8 @@ fig = px.line(
     y=metrics[metrics_selector], 
     color='estadiamento', 
     symbol="estadiamento")
+
+
 
 # Update layout (yaxis title and responsive legend)
 fig.update_layout(
