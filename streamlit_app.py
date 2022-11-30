@@ -93,7 +93,9 @@ ma_option = st.checkbox('Média móvel')
 
 
 if ma_option:
-   metrics_selector = f'{metrics_selector}_ma'
+    y_column_name = f'{metrics[metrics_selector]}_ma'
+else:
+    y_column_name = metrics[metrics_selector]
 
 # min_date = dados_estad_mensal.data.dt.date[0]
 # max_date = dados_estad_mensal.data.dt.date[-1]
@@ -106,7 +108,7 @@ dataset = dados_estad_mensal[dados_estad_mensal.primeiro_estadiamento.isin(symbo
 fig = px.line(
     dataset, 
     x='data', 
-    y=metrics[metrics_selector], 
+    y=y_column_name, 
     color='estadiamento', 
     symbol="estadiamento")
 
