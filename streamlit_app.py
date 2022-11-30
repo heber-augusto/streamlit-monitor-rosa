@@ -129,7 +129,7 @@ st.plotly_chart(
 
 space(2)
 
-st.table(dataset)
+#st.table(dataset)
 
 # inspirações para atualizar o dash
 # https://blog.streamlit.io/how-to-build-a-real-time-live-dashboard-with-streamlit/
