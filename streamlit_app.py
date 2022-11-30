@@ -90,9 +90,9 @@ metrics_selector = st.selectbox(
     list(metrics.keys())
 )
 y_column_name = metrics[metrics_selector]
-# ma_option = st.checkbox('Média móvel (6 meses)')
-#if ma_option:
-#    y_column_name = f'{metrics[metrics_selector]}_ma'
+ma_option = st.checkbox('Média móvel (6 meses)')
+if ma_option:
+    y_column_name = f'{metrics[metrics_selector]}_ma'
 
 # min_date = dados_estad_mensal.data.dt.date[0]
 # max_date = dados_estad_mensal.data.dt.date[-1]
