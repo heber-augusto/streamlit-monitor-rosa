@@ -59,7 +59,7 @@ def read_file(bucket_name, final_parquet_folder):
     dados_estad_mensal['estadiamento'] = dados_estad_mensal['primeiro_estadiamento']
     
     # remove dados de estadiamento vazio
-    dados_estad_mensal = dados_estad_mensal[(dados_estad_mensal.estadiamento != '') & (dados_estad_mensal.estado = 'São Paulo')]
+    dados_estad_mensal = dados_estad_mensal[(dados_estad_mensal.estadiamento != '') & (dados_estad_mensal.estado == 'São Paulo')]
     dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
     
     
