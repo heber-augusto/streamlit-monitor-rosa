@@ -36,7 +36,7 @@ metrics = {
 
 # Retrieve file contents.
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
-@st.experimental_memo(persist="disk")
+@st.cache_data(ttl=3600)
 def read_file(bucket_name, final_parquet_folder):
     bucket = client.bucket(bucket_name)
 
