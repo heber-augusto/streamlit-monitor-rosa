@@ -26,7 +26,7 @@ client = storage.Client(credentials=credentials)
 
 metrics = {
  'Número de pacientes em tratamento': 'numero_pacientes',   
- 'Óbitos':'obtitos',
+ 'Óbitos':'obitos',
  'Custo':'custo_estadiamento',
  'Custo por paciente': 'custo_por_paciente',
  'Número de diagnosticos': 'numero_diagnosticos'      
@@ -37,8 +37,16 @@ metrics = {
 # Retrieve file contents.
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
 @st.experimental_memo(persist="disk")
-def read_file(bucket_name, file_path):
+def read_file(bucket_name, final_parquet_folder):
     bucket = client.bucket(bucket_name)
+
+    # Lista os blobs no bucket
+    blobs = bucket.list_blobs(prefix=final_parquet_folder)
+    for blob in blobs:
+        if blob.name.endswith(".parquet"):
+            file_path = blob.name
+            break
+    
     content = bucket.blob(file_path).download_as_bytes()
     
     bytes_io = BytesIO(content)
@@ -51,7 +59,7 @@ def read_file(bucket_name, file_path):
     dados_estad_mensal['estadiamento'] = dados_estad_mensal['primeiro_estadiamento']
     
     # remove dados de estadiamento vazio
-    dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.estadiamento != '']
+    dados_estad_mensal = dados_estad_mensal[(dados_estad_mensal.estadiamento != '') & (dados_estad_mensal.estado = 'São Paulo')]
     dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
     
     
@@ -66,9 +74,17 @@ def read_file(bucket_name, file_path):
     return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
-file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
+# file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
 
-dados_estad_mensal = read_file(bucket_name, file_path)
+# nome da pasta do projeto
+project_folder_name = 'monitor'
+dev_lake_name = "lake-rosa-dev"
+lake_zone = "silver"
+database_name = "cancer_data"
+
+database_location = f'{dev_lake_name}/{lake_zone}'  # Substitua com o local do seu banco de dados Delta Lake
+final_parquet_folder = f'{database_location}/{database_name}.db/dados_estados_mensal/'
+dados_estad_mensal = read_file(bucket_name, final_parquet_folder)
 
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
