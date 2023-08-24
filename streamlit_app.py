@@ -70,8 +70,8 @@ def read_file(bucket_name, final_parquet_folder):
     #remove dois primeiros anos de dados
     dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data.dt.date >= datetime.date(2010,1,1)]    
     
-    
-    return dados_estad_mensal.sort_values(by='data')
+    dados_estad_mensal.sort_values(by='data', inplace=True)
+    return dados_estad_mensal
 
 bucket_name = "observatorio-oncologia"
 # file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
@@ -96,7 +96,7 @@ def space(num_lines=1):
 # Data visualisation part
 
 st.title(f"Monitor Rosa - dados mensais (câncer de mama)")
-
+st.dataframe(dados_estad_mensal)
 source = dados_estad_mensal
 all_symbols = dados_estad_mensal.estadiamento.unique()
 symbols = st.multiselect("Estadiamentos", all_symbols, all_symbols)
