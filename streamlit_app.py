@@ -96,7 +96,7 @@ def space(num_lines=1):
 # Data visualisation part
 
 st.title(f"Monitor Rosa - dados mensais (câncer de mama)")
-st.dataframe(dados_estad_mensal)
+# st.dataframe(dados_estad_mensal)
 source = dados_estad_mensal
 all_symbols = dados_estad_mensal.estadiamento.unique()
 symbols = st.multiselect("Estadiamentos", all_symbols, all_symbols)
