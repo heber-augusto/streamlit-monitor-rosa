@@ -41,7 +41,7 @@ def read_file(bucket_name, final_parquet_folder):
     bucket = client.bucket(bucket_name)
 
     # Lista os blobs no bucket
-    blobs = bucket.list_blobs(prefix=final_parquet_folder)
+    blobs = bucket.list_blobs(prefix=f"{final_parquet_folder}part-")
     for blob in blobs:
         if blob.name.endswith(".parquet"):
             file_path = blob.name
