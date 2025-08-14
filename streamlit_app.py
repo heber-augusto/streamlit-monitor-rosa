@@ -18,10 +18,10 @@ st.set_page_config(
 
 
 # Create API client.
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-)
-client = storage.Client(credentials=credentials)
+#credentials = service_account.Credentials.from_service_account_info(
+#    st.secrets["gcp_service_account"]
+#)
+#client = storage.Client(credentials=credentials)
 
 
 metrics = {
@@ -37,39 +37,35 @@ metrics = {
 # Retrieve file contents.
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
 @st.cache_data(ttl=3600)
-def read_file(bucket_name, final_parquet_folder):
-    bucket = client.bucket(bucket_name)
-
-    # Lista os blobs no bucket
-    blobs = bucket.list_blobs(prefix=f"{final_parquet_folder}part-")
-    for blob in blobs:
-        if blob.name.endswith(".parquet"):
-            file_path = blob.name
-            break
-    
-    content = bucket.blob(file_path).download_as_bytes()
-    
-    bytes_io = BytesIO(content)
-    dados_estad_mensal = pd.read_parquet(bytes_io)    
+def read_file(local_csv_path):
+    dados_estad_mensal = pd.read_csv(local_csv_path)
 
     dados_estad_mensal['data'] = pd.to_datetime(
-        dados_estad_mensal['data'],
-        format='%Y%m')
+        dados_estad_mensal['data'], format='%Y%m')
     # renomeia coluna
     dados_estad_mensal['estadiamento'] = dados_estad_mensal['primeiro_estadiamento']
-    
-    # remove dados de estadiamento vazio
-    dados_estad_mensal = dados_estad_mensal[(dados_estad_mensal.estadiamento != '') & (dados_estad_mensal.estado == 'São Paulo')]
-    dados_estad_mensal['custo_por_paciente'] = dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
-    
-    
-    # cria média móvel para cada uma das colunas
-    for k,v in metrics.items():    
-        dados_estad_mensal[f'{v}_ma'] = dados_estad_mensal.groupby('estadiamento')[v].rolling(window=6).mean().reset_index(0,drop=True)
-    
-    #remove dois primeiros anos de dados
-    dados_estad_mensal = dados_estad_mensal[dados_estad_mensal.data.dt.date >= datetime.date(2010,1,1)]    
-    
+
+    # Remove dados de estadiamento vazio, nulo ou NaN e filtra estado
+    dados_estad_mensal = dados_estad_mensal[
+        (dados_estad_mensal['estadiamento'].notna()) &
+        (dados_estad_mensal['estadiamento'] != '') &
+        (dados_estad_mensal['estado'] == 'São Paulo')
+    ]
+    dados_estad_mensal['custo_por_paciente'] = (
+        dados_estad_mensal['custo_estadiamento'] / dados_estad_mensal['numero_pacientes']
+    )
+
+    # Cria média móvel para cada coluna
+    for k, v in metrics.items():
+        dados_estad_mensal[f'{v}_ma'] = (
+            dados_estad_mensal.groupby('estadiamento')[v]
+            .rolling(window=6).mean().reset_index(0, drop=True)
+        )
+
+    # Remove dois primeiros anos de dados
+    dados_estad_mensal = dados_estad_mensal[
+        dados_estad_mensal.data.dt.date >= datetime.date(2010, 1, 1)
+    ]
     dados_estad_mensal.sort_values(by='data', inplace=True)
     return dados_estad_mensal
 
@@ -84,7 +80,9 @@ database_name = "cancer_data"
 
 database_location = f'{dev_lake_name}/{lake_zone}'  # Substitua com o local do seu banco de dados Delta Lake
 final_parquet_folder = f'{database_location}/{database_name}.db/dados_estados_mensal/'
-dados_estad_mensal = read_file(bucket_name, final_parquet_folder)
+dados_estad_mensal = read_file(
+    local_csv_path='dados_estados_mensal.csv'
+)
 
 def space(num_lines=1):
     """Adds empty lines to the Streamlit app."""
