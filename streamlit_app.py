@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="Monitor Rosa"
 )
 
-dados_estad_mensal = read_file('dados_estados_mensal.csv')
+dados_estad_mensal = read_file(st.secrets["google_drive_file_id"])
 
 st.title("Monitor Rosa - dados mensais (câncer de mama)")
 
