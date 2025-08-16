@@ -1,2 +1,7 @@
 __pycache__
 .streamlit
+*.json
+*.pyc
+*.pyo
+*.pyd
+*.csv
