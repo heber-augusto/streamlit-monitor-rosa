@@ -18,11 +18,7 @@ st.set_page_config(
     page_title="Monitor Rosa")
 
 
-# Create API client.
-#credentials = service_account.Credentials.from_service_account_info(
-#    st.secrets["gcp_service_account"]
-#)
-#client = storage.Client(credentials=credentials)
+
 
 
 metrics = {
@@ -34,10 +30,13 @@ metrics = {
 }
 
 
-
-
 def autenticar_servico(json_caminho, escopos):
-    credenciais = service_account.Credentials.from_service_account_file(json_caminho, scopes=escopos)
+    # Create API client.
+    credenciais = service_account.Credentials.from_service_account_info(
+        st.secrets["googledrive"]
+    )
+    #client = storage.Client(credentials=credentials)    
+    #credenciais = service_account.Credentials.from_service_account_file(json_caminho, scopes=escopos)
     return build('drive', 'v3', credentials=credenciais)
 
 
