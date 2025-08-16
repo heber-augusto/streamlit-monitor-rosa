@@ -18,9 +18,6 @@ st.set_page_config(
     page_title="Monitor Rosa")
 
 
-
-
-
 metrics = {
  'Número de pacientes em tratamento': 'numero_pacientes',   
  'Óbitos':'obitos',
@@ -30,13 +27,11 @@ metrics = {
 }
 
 
-def autenticar_servico(json_caminho, escopos):
+def autenticar_servico(escopos):
     # Create API client.
     credenciais = service_account.Credentials.from_service_account_info(
-        st.secrets["googledrive"]
+        st.secrets["googledrive"], scopes=escopos
     )
-    #client = storage.Client(credentials=credentials)    
-    #credenciais = service_account.Credentials.from_service_account_file(json_caminho, scopes=escopos)
     return build('drive', 'v3', credentials=credenciais)
 
 
@@ -67,10 +62,8 @@ def read_file_from_drive(service, file_id, output_file_name):
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
 @st.cache_data(ttl=3600)
 def read_file(google_drive_file_id):
-
-    auth_json_path='monitor-rosa-leitura.json'
     escopos = ['https://www.googleapis.com/auth/drive.readonly']
-    service = autenticar_servico(auth_json_path, escopos)
+    service = autenticar_servico(escopos)
 
     read_file_from_drive(
         service,
@@ -109,7 +102,7 @@ def read_file(google_drive_file_id):
     return dados_estad_mensal
 
 dados_estad_mensal = read_file(
-    google_drive_file_id='140mI8ZZGBDqPUtJXkoSFFGWzCcRPduJv'
+    google_drive_file_id=st.secrets["google_drive_file_id"]
 )
 
 def space(num_lines=1):
@@ -169,7 +162,7 @@ st.plotly_chart(
     fig, 
     use_container_width=True)
 
-space(2)
+space(4)
 
 #st.table(dataset)
 
