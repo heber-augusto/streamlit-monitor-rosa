@@ -4,7 +4,8 @@ from io import BytesIO
 import streamlit as st
 
 from google.oauth2 import service_account
-from google.cloud import storage
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 import pandas as pd
 import datetime
 
@@ -17,13 +18,6 @@ st.set_page_config(
     page_title="Monitor Rosa")
 
 
-# Create API client.
-#credentials = service_account.Credentials.from_service_account_info(
-#    st.secrets["gcp_service_account"]
-#)
-#client = storage.Client(credentials=credentials)
-
-
 metrics = {
  'Número de pacientes em tratamento': 'numero_pacientes',   
  'Óbitos':'obitos',
@@ -31,14 +25,52 @@ metrics = {
  'Custo por paciente': 'custo_por_paciente',
  'Número de diagnosticos': 'numero_diagnosticos'      
 }
- 
+
+
+def autenticar_servico(escopos):
+    # Create API client.
+    credenciais = service_account.Credentials.from_service_account_info(
+        st.secrets["googledrive"], scopes=escopos
+    )
+    return build('drive', 'v3', credentials=credenciais)
+
+
+def read_file_from_drive(service, file_id, output_file_name):
+    """Reads the content of a file from Google Drive by its ID and saves it to a local file."""
+    try:
+        # Call the Drive v3 API
+        # You can specify the mimeType if you know it, or handle different types
+        # This example focuses on text/plain or similar readable files
+        request = service.files().get_media(fileId=file_id)
+
+        # Download the file content
+        # For larger files, you might need to use MediaIoBaseDownload
+        content = request.execute()
+
+        # Save the content to the specified output file
+        with open(output_file_name, 'wb') as f:
+            f.write(content)
+        print(f"File '{output_file_name}' downloaded successfully.")
+
+    except HttpError as error:
+        print(f'An API error occurred: {error}')
+
+
 
 
 # Retrieve file contents.
 # Uses st.experimental_memo to only rerun when the query changes or after 10 min.
 @st.cache_data(ttl=3600)
-def read_file(local_csv_path):
-    dados_estad_mensal = pd.read_csv(local_csv_path)
+def read_file(google_drive_file_id):
+    escopos = ['https://www.googleapis.com/auth/drive.readonly']
+    service = autenticar_servico(escopos)
+
+    read_file_from_drive(
+        service,
+        google_drive_file_id,
+        output_file_name='dados_estados_mensal.csv')    
+
+    dados_estad_mensal = pd.read_csv('dados_estados_mensal.csv')
 
     dados_estad_mensal['data'] = pd.to_datetime(
         dados_estad_mensal['data'], format='%Y%m')
@@ -69,19 +101,8 @@ def read_file(local_csv_path):
     dados_estad_mensal.sort_values(by='data', inplace=True)
     return dados_estad_mensal
 
-bucket_name = "observatorio-oncologia"
-# file_path = r"monitor/SP/consolidado/dados_estad_mensal.parquet.gzip"
-
-# nome da pasta do projeto
-project_folder_name = 'monitor'
-dev_lake_name = "lake-rosa-dev"
-lake_zone = "silver"
-database_name = "cancer_data"
-
-database_location = f'{dev_lake_name}/{lake_zone}'  # Substitua com o local do seu banco de dados Delta Lake
-final_parquet_folder = f'{database_location}/{database_name}.db/dados_estados_mensal/'
 dados_estad_mensal = read_file(
-    local_csv_path='dados_estados_mensal.csv'
+    google_drive_file_id=st.secrets["google_drive_file_id"]
 )
 
 def space(num_lines=1):
@@ -141,7 +162,7 @@ st.plotly_chart(
     fig, 
     use_container_width=True)
 
-space(2)
+space(4)
 
 #st.table(dataset)
 

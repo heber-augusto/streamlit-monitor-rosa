@@ -1,4 +1,4 @@
 pandas
 click==8
-google-cloud-storage
 plotly
+google-api-python-client
