@@ -1,8 +1,35 @@
 import pandas as pd
 import datetime
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+import streamlit as st
 
-def read_file(filepath):
-    dados = pd.read_csv(filepath)
+def autenticar_servico(escopos):
+    credenciais = service_account.Credentials.from_service_account_info(
+        st.secrets["googledrive"], scopes=escopos
+    )
+    return build('drive', 'v3', credentials=credenciais)
+
+def read_file_from_drive(service, file_id, output_file_name):
+    try:
+        request = service.files().get_media(fileId=file_id)
+        content = request.execute()
+        with open(output_file_name, 'wb') as f:
+            f.write(content)
+        print(f"File '{output_file_name}' downloaded successfully.")
+    except HttpError as error:
+        print(f'An API error occurred: {error}')
+
+@st.cache_data(ttl=3600)
+def read_file(google_drive_file_id):
+    escopos = ['https://www.googleapis.com/auth/drive.readonly']
+    service = autenticar_servico(escopos)
+    read_file_from_drive(
+        service,
+        google_drive_file_id,
+        output_file_name='dados_estados_mensal.csv')
+    dados = pd.read_csv('dados_estados_mensal.csv')
     dados['data'] = pd.to_datetime(dados['data'], format='%Y%m')
     dados['estadiamento'] = dados['primeiro_estadiamento']
     return dados
